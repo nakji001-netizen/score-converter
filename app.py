@@ -4,14 +4,32 @@ import numpy as np
 # 페이지 기본 설정
 st.set_page_config(page_title="내신 등급 변환기 (공식 표본 기반)", page_icon="📈")
 
-st.title("📈 5등급 ➔ 9등급 평균 환산기")
+# --- 모바일 반응형 CSS 주입 ---
+st.markdown("""
+    <style>
+    /* 기본 타이틀 스타일 (PC 등 큰 화면) */
+    .responsive-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+    }
+    /* 모바일 화면 (화면 너비 768px 이하) 스케일링 */
+    @media (max-width: 768px) {
+        .responsive-title {
+            font-size: 1.6rem; /* 모바일에서는 글자 크기를 축소 */
+        }
+    }
+    </style>
+    <div class="responsive-title">📈 5등급 ➔ 9등급 평균 환산기</div>
+""", unsafe_allow_html=True)
+
 st.write("2028학년도 대입제도 개편 대비 내신 등급 변환 가이드의 데이터 표본을 바탕으로 9등급 평균을 환산합니다.")
 
 # 1. 문서 기반 기준점 데이터 설정 (1.00 ~ 5.00까지 0.05 단위, 총 81개 구간)
-# 5등급 기준점 생성
 grade_5_points = np.round(np.linspace(1.00, 5.00, 81), 2)
 
-# 문서 내 '9등급(평균)' 데이터 직접 추출
+# 대진대학교 문서 내 '9등급(평균)' 데이터
 grade_9_avg_points = [
     1.18, 1.36, 1.51, 1.63, 1.73, 1.85, 1.95, 2.05, 2.14, 2.25,
     2.34, 2.42, 2.48, 2.61, 2.69, 2.79, 2.82, 2.97, 3.06, 3.15,
@@ -35,7 +53,6 @@ input_grade = st.number_input(
 
 if st.button("9등급 평균으로 변환하기"):
     # 3. 문서 데이터 기반 선형 보간법 적용
-    # 입력한 5등급 점수가 어느 구간에 속하는지 확인 후 비례식을 통해 9등급 환산
     converted_9_grade = np.interp(input_grade, grade_5_points, grade_9_avg_points)
     
     # 4. 결과 출력
